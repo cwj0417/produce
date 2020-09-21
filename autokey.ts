@@ -18,6 +18,7 @@ const createProxy = (value: any) => {
         get (state: state, prop: string | symbol) {
             if (prop === keyForState) return state;
             state.copy = state.copy ?? {...state.base};
+            console.log(state, prop, state.copy[prop]);
             return (state.copy[prop] = createProxy(state.copy[prop]));
         }
     }
@@ -39,11 +40,11 @@ const readresult = (draft: any) => {
     return state.copy;
 }
 
-const produce: <T = any>(baseState: T, recipe: (draft: T) => any) => T = (baseState, recipe) => {
+const autokey: <T = any>(baseState: T, recipe: (draft: T) => any) => T = (baseState, recipe) => {
     
     const proxy = createProxy(baseState);
     recipe(proxy);
     return readresult(proxy);
 }
 
-export default produce;
+export default autokey;
